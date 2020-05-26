@@ -1,45 +1,47 @@
 package com.github.beloin.SpringBootExpert;
 
 import com.github.beloin.SpringBootExpert.domain.entity.Cliente;
+import com.github.beloin.SpringBootExpert.domain.entity.Pedido;
 import com.github.beloin.SpringBootExpert.domain.repository.Clientes;
+import com.github.beloin.SpringBootExpert.domain.repository.Pedidos;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @SpringBootApplication
 public class SpringBootExpertApplication {
 
     @Bean
-    public CommandLineRunner init(@Autowired Clientes clientes) {
+    public CommandLineRunner init(@Autowired Clientes clientes,
+                                  @Autowired Pedidos pedidos) {
         return args -> {
-            clientes.save(new Cliente("Sena Extreme"));
+            System.out.println("Criando e salvando CLiente");
+            Cliente cliente = new Cliente("Sena Extreme");
+            clientes.save(cliente);
             clientes.save(new Cliente("Daff Daffinha"));
 
+            Pedido pedido = new Pedido();
+            pedido.setCliente(cliente);
+            pedido.setDataPedido(LocalDate.now());
+            pedido.setTotal(BigDecimal.valueOf(150.20));
+
+            pedidos.save(pedido);
+
+//            Cliente cli1 = clientes.findClienteFetchPedidos(cliente.getId());
+//            System.out.println(cli1);
+//            System.out.println("Pedidos:" + cli1.getPedidos());
+
+            Set<Pedido> pedidoSet = pedidos.findByCliente(cliente);
+            pedidoSet.forEach(System.out::println);
+
             List<Cliente> cli = clientes.findAll();
-            cli.forEach(System.out::println);
-            cli.forEach(c -> {
-                c.setNome(c.getNome() + " Atualizado");
-                clientes.save(c);
-            });
-
-            cli = clientes.findAll();
-            cli.forEach(System.out::println);
-
-            System.out.println("Encontrados com 'Sena':");
-            System.out.println(clientes.findByNomeLike("Sena"));
-
-            clientes.findAll().forEach(clientes::delete);
-
-            System.out.println("Depois de serem deletados:");
-            cli = clientes.findAll();
             cli.forEach(System.out::println);
         };
     }
