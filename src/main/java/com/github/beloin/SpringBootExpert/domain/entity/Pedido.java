@@ -1,10 +1,18 @@
 package com.github.beloin.SpringBootExpert.domain.entity;
 
+import com.github.beloin.SpringBootExpert.domain.enums.StatusPedido;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 @Entity
 @Table(name = "pedido")
 public class Pedido {
@@ -23,55 +31,9 @@ public class Pedido {
     private BigDecimal total;
 
     @OneToMany(mappedBy = "pedido")
-    private Set<ItemPedido> itemPedidos;
+    private List<ItemPedido> itens;
 
-    public Set<ItemPedido> getItemPedidos() {
-        return itemPedidos;
-    }
+    @Enumerated(value = EnumType.STRING)
+    private StatusPedido status;
 
-    public void setItemPedidos(Set<ItemPedido> itemPedidos) {
-        this.itemPedidos = itemPedidos;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
-    }
-
-    public LocalDate getDataPedido() {
-        return dataPedido;
-    }
-
-    public void setDataPedido(LocalDate dataPedido) {
-        this.dataPedido = dataPedido;
-    }
-
-    public BigDecimal getTotal() {
-        return total;
-    }
-
-    public void setTotal(BigDecimal total) {
-        this.total = total;
-    }
-
-    @Override
-    public String toString() {
-        return "Pedido{" +
-                "id=" + id +
-                ", cliente=" + cliente +
-                ", dataPedido=" + dataPedido +
-                ", total=" + total +
-                '}';
-    }
 }
